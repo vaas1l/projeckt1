@@ -1,10 +1,10 @@
 import fs from 'fs';
 
-fs.readFile('data2.txt', 'utf8', (err, data) => {
+fs.readFile('ukol.txt', 'utf8', (err, ukol) => {
     if (err) {
         console.error(err);
     }
     else {
-        console.log(data);
+        console.log(ukol);
     }
 });
