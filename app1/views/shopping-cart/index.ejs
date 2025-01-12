@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <a href="../shopping-cart/index.html">
+            <button class="shopping-cart">
+                <i class="fas fa-shopping-cart"></i>
+            </button>
+        </a>
+        <div class="header-content">
+          <a href="../" class="logo">
+            <img src="../assets/foto/pngwing.com.png" alt="Logo">
+            <span class="site-name">Minecraft</span>
+          </a>
+          <button class="menu-toggle" id="menuToggle">
+            <span class="hamburger"></span>
+          </button>
+        </div>
+        <nav class="nav-links">
+          <ul>
+            <li><a href="/Games">Games</a></li>
+            <li><a href="/Shop">Shop</a></li>
+            <li><a href="/Services">Services</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li><a href="/Events">Events</a></li>
+          </ul>
+      </nav>
+      </header>
+  <!-- Банер -->
+  <div class="cart-banner">
+    <div class="cart-header">
+      <h1>Your Shopping Cart</h1>
+      <p>Review the items in your cart.</p>
+    </div>
+  </div>
+
+  <!-- Таблиця товарів -->
+  <main>
+    <table class="cart-table">
+      <thead>
+        <tr>
+          <th>Product Image</th>
+          <th>Product Name</th>
+          <th>Price ($)</th>
+          <th>Quantity</th>
+          <th>Subtotal ($)</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="cart-items">
+        <!-- JS буде додавати товари тут -->
+      </tbody>
+    </table>
+
+    <!-- Підсумок -->
+    <div class="cart-summary">
+      <p><strong>Total:</strong> $<span id="total-price">0.00</span></p>
+      <button id="clear-cart" class="clear-cart">Clear Cart</button>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 Minecraft Shop. All rights reserved.</p>
+    <ul class="footer-links">
+      <li><a href="/Games">Games</a></li>
+      <li><a href="/Shop">Shop</a></li>
+      <li><a href="/Services">Services</a></li>
+      <li><a href="/contact">Contact</a></li>
+      <li><a href="/Events">Events</a></li>
+    </ul>
+    <ul class="social-links">
+        <li><a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a></li>
+        <li><a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a></li>
+        <li><a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a></li>
+    </ul>
+</footer>
+
+  <script src="../assets/js/cart.js"></script>
+</body>
+</html>

@@ -12,6 +12,34 @@ app.get('/', (req, res) => {
   res.render('index')
 })
 
+app.get('/contact', (req, res) => {
+    res.render('contact/index');
+  });
+
+app.get('/Games', (req, res) => {
+    res.render('games/index'); 
+  });
+
+app.get('/shop', (req, res) => {
+    res.render('shop/index');
+});
+
+app.get('/services', (req, res) => {
+    res.render('services/index');
+});
+
+app.get('/events', (req, res) => {
+    res.render('events/index');
+});
+
+app.get('/shopping-cart', (req, res) => {
+    res.render('shopping-cart/index');
+} );
+
+
+
+
+
 app.get('/jsonn', (req, res) => {
 	// Express automaticky nastavi spravne content-type a serialzuje objekt do JSONu
   res.send({ firstName: 'Franta', lastName: 'Sádlo' })
