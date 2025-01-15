@@ -138,27 +138,27 @@
   }
   
   .hlavni-stranka {
-    background-image: url('../foto/B5BEB681-F373-4541-BE20-E4DB10CF2335.png'); 
+    background-image: url('/assets/foto/B5BEB681-F373-4541-BE20-E4DB10CF2335.png'); 
   }
   
   .Games-stranka {
-    background-image: url('../foto/foto-stranka-games.jpg');
+    background-image: url('/assets/foto/foto-stranka-games.jpg');
   }
   
   .services-stranka {
-    background-image: url('../foto/6D230A6C-ECDC-4261-BD71-329FA243AA1C.png');
+    background-image: url('/assets/foto/6D230A6C-ECDC-4261-BD71-329FA243AA1C.png');
   }
   
   .shop-stranka {
-    background-image: url('../foto/22A51587-1374-416C-ADA6-18B884DB4D18.png');
+    background-image: url('/assets/foto/22A51587-1374-416C-ADA6-18B884DB4D18.png');
   }
   
   .contact-stranka {
-    background-image: url('../foto/22A51587-1374-416C-ADA6-18B884DB4D18.png');
+    background-image: url('/assets/foto/22A51587-1374-416C-ADA6-18B884DB4D18.png');
   }
   
   .event-stranka {
-    background-image: url('../foto/bacraund-image-events-min.png');
+    background-image: url('/assets/foto/bacraund-image-events-min.png');
   }
   .main-content {
     height: 100vh; 
