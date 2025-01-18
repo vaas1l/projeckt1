@@ -9,7 +9,7 @@ app.use(express.static('public'))
 // / - url pro kterou se zavolá callback
 app.get('/', (req, res) => {
   // send automaticky nastaví Content-Type dle nejlepšího odhadu
-  res.render('index', { title: 'Minecraft', description: 'Learn fascinating facts about Minecraft.', keywords: 'Minecraft, fun facts, games, shop' })
+  res.render('index', { title: 'Minecrafts', description: 'Learn fascinating facts about Minecraft. pishov nachuj', keywords: 'Minecraft, fun facts, games, shop' })
 })
 
 app.get('/contact', (req, res) => {

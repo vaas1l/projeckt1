@@ -1,19 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Minecraft</title>
-        <link rel="stylesheet" href="css/style.css">
-        <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon/favicon.ico">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-        <meta name="description" content="Learn fascinating facts about Minecraft.">
-        <meta name="keywords" content="Minecraft, fun facts, games, shop">
-        <meta name="author" content="Vasyl">
-    </head>
+    <%-include('../components/_head') %>
 <body class="event-stranka">
     <header class="header">
         <div class="header-content">
@@ -25,15 +12,7 @@
                 <span class="hamburger"></span>
             </button>
         </div>
-        <nav class="nav-links">
-            <ul>
-                <li><a href="/Games">Games</a></li>
-                <li><a href="/Shop">Shop</a></li>
-                <li><a href="/Services">Services</a></li>
-                <li><a href="/contact">Contact</a></li>
-                <li><a href="/Events">Events</a></li>
-            </ul>
-        </nav>
+        <%-include('../components/_links') %>
     </header>
 
     <!-- Events Timeline -->

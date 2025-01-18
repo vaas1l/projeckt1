@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shopping Cart</title>
-  <link rel="stylesheet" href="css/style.css">
-</head>
+  <%-include('../components/_head') %>
 <body>
     <header class="header">
         <a href="../shopping-cart/index.html">
@@ -22,15 +17,7 @@
             <span class="hamburger"></span>
           </button>
         </div>
-        <nav class="nav-links">
-          <ul>
-            <li><a href="/Games">Games</a></li>
-            <li><a href="/Shop">Shop</a></li>
-            <li><a href="/Services">Services</a></li>
-            <li><a href="/contact">Contact</a></li>
-            <li><a href="/Events">Events</a></li>
-          </ul>
-      </nav>
+        <%-include('../components/_links') %>
       </header>
   <!-- Банер -->
   <div class="cart-banner">
