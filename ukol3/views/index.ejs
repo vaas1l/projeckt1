@@ -16,10 +16,15 @@
       </tr>
 
       <% for (const todo of todos) { %>
-      <tr>
-        <td><%= todo.text %></td>
-        <td><%= todo.done ? 'ano' : 'ne' %></td>
-      </tr>
+        <tr>
+          <td><%= todo.text %></td>
+          <td><%= todo.done ? 'ano' : 'ne' %></td>
+          <td>
+            <form action="/toggle/<%= todo.id %>" method="POST">
+              <button type="submit">zmenit</button>
+            </form>
+          </td>
+        </tr>
       <% } %>
     </table>
   </body>
