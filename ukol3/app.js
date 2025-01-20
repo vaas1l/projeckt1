@@ -5,6 +5,8 @@ const port = 3000
 const app = express()
 
 app.set('view engine', 'ejs')
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded data
+app.use(express.json()); // Parse JSON data
 
 let id = 1
 
@@ -38,9 +40,31 @@ app.get('/', (req, res) => {
 	})
 })
 
-app.post('/toggle/:id', (req, res) => {
-  const todo = todos.find(t => t.id == req.params.id);
+app.post('/toggle', (req, res) => {
+  console.log(req.body);
+  const todo = todos.find(t => t.id == req.body.id);
   if (todo) todo.done = !todo.done;
+  res.redirect('/');
+});
+
+app.get('/delete', (req, res) => {
+  const todoId = parseInt(req.query.id); 
+  const index = todos.findIndex(t => t.id === todoId); 
+  if (index !== -1) {
+    todos.splice(index, 1); 
+  }
+  res.redirect('/'); 
+});
+
+app.get('/add', (req, res) => {
+  const newTaskText = req.query.text;
+  if (newTaskText && newTaskText.trim() !== '') {
+    todos.push({
+      id: todos.length ? todos[todos.length - 1].id + 1 : 1,
+      text: newTaskText,
+      done: false,
+    });
+  }
   res.redirect('/');
 });
 

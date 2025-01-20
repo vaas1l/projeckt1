@@ -13,6 +13,12 @@
       <tr>
         <th>Text</th>
         <th>Hotovo</th>
+
+        <h2>přidat novy zadani</h2>
+        <form action="/add" method="GET" style="margin-bottom: 20px;">
+          <input type="text" name="text" placeholder="Napište zadani" required />
+          <button type="submit">Přidat</button>
+        </form>
       </tr>
 
       <% for (const todo of todos) { %>
@@ -20,9 +26,11 @@
           <td><%= todo.text %></td>
           <td><%= todo.done ? 'ano' : 'ne' %></td>
           <td>
-            <form action="/toggle/<%= todo.id %>" method="POST">
+            <form action="/toggle" method="POST">
+              <input type="hidden" name="id" value="<%= todo.id %>" />
               <button type="submit">zmenit</button>
             </form>
+            <a href="/delete?id=<%= todo.id %>">smazat</a>
           </td>
         </tr>
       <% } %>
