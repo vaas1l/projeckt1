@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
   </head>
   <body>
     <h1><%= title %></h1>
@@ -13,24 +14,37 @@
       <tr>
         <th>Text</th>
         <th>Hotovo</th>
+        <th>Akce</th>
 
-        <h2>přidat novy zadani</h2>
+        <h2>Přidat novy zadani</h2>
         <form action="/add" method="GET" style="margin-bottom: 20px;">
           <input type="text" name="text" placeholder="Napište zadani" required />
           <button type="submit">Přidat</button>
         </form>
+
+        <div class="filter-container">
+          <a href="/" class="filter-btn <%= filter === 'all' ? 'active' : '' %>">Vše</a>
+          <a href="/filter?filter=done" class="filter-btn <%= filter === 'done' ? 'active' : '' %>">Udělaní</a>
+          <a href="/filter?filter=not_done" class="filter-btn <%= filter === 'not_done' ? 'active' : '' %>">Neudělaní</a>
+        </div>
       </tr>
 
       <% for (const todo of todos) { %>
         <tr>
           <td><%= todo.text %></td>
           <td><%= todo.done ? 'ano' : 'ne' %></td>
-          <td>
+          <td class="actions">
             <form action="/toggle" method="POST">
               <input type="hidden" name="id" value="<%= todo.id %>" />
               <button type="submit">zmenit</button>
             </form>
-            <a href="/delete?id=<%= todo.id %>">smazat</a>
+            <a href="/delete?id=<%= todo.id %>" class="zmazat">smazat</a>
+
+            <form action="/edit" method="post" style="display: inline;">
+              <input type="hidden" name="id" value="<%= todo.id %>" />
+              <input type="text" name="text" value="<%= todo.text %>" placeholder="Upravit text" required />
+              <button type="submit">Upravit</button>
+            </form>
           </td>
         </tr>
       <% } %>
