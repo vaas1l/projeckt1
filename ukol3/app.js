@@ -36,11 +36,21 @@ const todos = [
 ]
 
 app.get('/', (req, res) => {
+  const filter = req.query.filter || 'all';
+  let filteredTodos = [];
+  if (filter === 'all'){
+    filteredTodos = todos;
+  } else if (filter === 'done') {
+    filteredTodos = todos.filter(t => t.done); 
+  } else if (filter === 'not_done') {
+    filteredTodos = todos.filter(t => !t.done); 
+  }
+
   res.render('index', {
-		title: 'ToDos!',
-		todos,
-    filter: 'all',
-	})
+    title: 'ToDos!',
+    todos: filteredTodos,
+    filter, 
+  });
 })
 
 app.post('/toggle', (req, res) => {
@@ -84,23 +94,6 @@ app.get('/add', (req, res) => {
     console.log(`new task = "${newTask.text}" id=${newTask.id}`);
   }
   res.redirect('/');
-});
-
-app.get('/filter', (req, res) => {
-  const filter = req.query.filter || 'all';
-  let filteredTodos = todos;
-
-  if (filter === 'done') {
-    filteredTodos = todos.filter(t => t.done); 
-  } else if (filter === 'not_done') {
-    filteredTodos = todos.filter(t => !t.done); 
-  }
-
-  res.render('index', {
-    title: 'ToDos!',
-    todos: filteredTodos,
-    filter, 
-  });
 });
 
 app.listen(port, () => {
