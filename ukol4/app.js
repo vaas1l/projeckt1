@@ -19,62 +19,89 @@ const todos = []
 
 app.get('/', async (req, res) => {
   const filter = req.query.filter || 'all';
-  let filteredTodos = [];
-  if (filter === 'all') {
-    const todos = await db('todos').select('*') // * znamena vsechny sloupce
-    filteredTodos = todos;
-  } else if (filter === 'done') {
-    filteredTodos = todos.filter(t => t.done);
-  } else if (filter === 'not_done') {
-    filteredTodos = todos.filter(t => !t.done);
+  let filteredTodos;
+
+  try {
+    if (filter === 'all') {
+      filteredTodos = await db('todos').select('*');
+    } else if (filter === 'done') {
+      filteredTodos = await db('todos').where('done', true);
+    } else if (filter === 'not_done') {
+      filteredTodos = await db('todos').where('done', false);
+    } else {
+      return res.status(400).send('Invalid filter value');
+    }
+
+    res.render('index', {
+      title: 'ToDos!',
+      todos: filteredTodos,
+      filter,
+    });
+  } catch (error) {
+    console.error('Error fetching todos:', error);
+    res.status(500).send('Internal Server Error');
   }
+});
 
-  res.render('index', {
-    title: 'ToDos!',
-    todos: filteredTodos,
-    filter,
-  });
-})
-
-app.post('/toggle', (req, res) => {
-  console.log(req.body);
-  const todo = todos.find(t => t.id == req.body.id);
-  if (todo) todo.done = !todo.done;
-  res.redirect('/');
+app.post('/toggle', async (req, res) => {
+  const { id } = req.body;
+   try {
+    const todo = await db('todos').where('id', id).first();
+    const newDoneStatus = !todo.done;
+    await db('todos').where('id', id).update({ done: newDoneStatus });
+    console.log(`Todo updated: ID = ${id}, New done status = ${newDoneStatus}`);
+    res.redirect('/');
+  } catch (error) {
+    console.error('Error toggling todo:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 app.post('/edit', async (req, res) => {
   const { id, text } = req.body;
-  const todo = await db('todos').select('*').where('id', id).first()
-  if(!todo) {
-    return res.status(404).send('Not found')
-  }
-  if (todo && text.trim() !== '') {
+  try {
+    const todo = await db('todos').where('id', id).first();
     const originalText = todo.text;
-    todo.text = text.trim();
-    console.log(`id=${id} edit: ${originalText} -> ${todo.text}`);
+    await db('todos').where('id', id).update({ text: text.trim() });
+    console.log(`id=${id} edit: ${originalText} -> ${text.trim()}`);
+    res.redirect('/');
+  } catch (error) {
+    console.error('Error editing todo:', error);
+    res.status(500).send('Internal Server Error');
   }
-
-  res.redirect('/');
 });
 
-app.get('/delete', (req, res) => {
+app.get('/delete', async (req, res) => {
   const todoId = parseInt(req.query.id);
-  console.log(`id=${todoId} delete`);
-  const index = todos.findIndex(t => t.id === todoId);
-  if (index !== -1) {
-    todos.splice(index, 1);
+
+  try {
+    const todo = await db('todos').where('id', todoId).first();
+
+    await db('todos').where('id', todoId).del();
+    console.log(`Deleted: ID = ${todoId}`);
+    res.redirect('/');
+  } catch (error) {
+    console.error('Error deleting todo:', error);
+    res.status(500).send('Internal Server Error');
   }
-  res.redirect('/');
 });
 
 app.get('/add', async (req, res) => {
   const newTaskText = req.query.text;
-  if (newTaskText && newTaskText.trim() !== '') {
-    await db('todos').insert({ text: newTaskText.trim() })
+  try {
+    const ids = await db('todos').pluck('id');
+    const allIds = new Set(ids);
+    let newId = 1;
+    while (allIds.has(newId)) {
+      newId++;
+    }
+    await db('todos').insert({ id: newId, text: newTaskText.trim(), done: false });
+    console.log(`Task added: ID = ${newId}, Text = "${newTaskText.trim()}"`);
+    res.redirect('/');
+  } catch (error) {
+    console.error('Error adding task:', error);
+    res.status(500).send('Internal Server Error');
   }
-  
-  res.redirect('/');
 });
 
 app.listen(port, () => {
