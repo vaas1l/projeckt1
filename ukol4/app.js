@@ -17,6 +17,9 @@ let id = 1
 
 const todos = []
 
+
+
+
 app.get('/', async (req, res) => {
   const filter = req.query.filter || 'all';
   let filteredTodos;
@@ -25,9 +28,11 @@ app.get('/', async (req, res) => {
     if (filter === 'all') {
       filteredTodos = await db('todos').select('*');
     } else if (filter === 'done') {
-      filteredTodos = await db('todos').where('done', true);
+      filteredTodos = await db('todos').where({'done': true});
     } else if (filter === 'not_done') {
-      filteredTodos = await db('todos').where('done', false);
+      filteredTodos = await db('todos').where({'done': false});
+    } else if (filter === 'priority') {
+      filteredTodos = await db('todos').select('*').orderBy('priority', 'asc');
     } else {
       return res.status(400).send('Invalid filter value');
     }
@@ -58,12 +63,26 @@ app.post('/toggle', async (req, res) => {
 });
 
 app.post('/edit', async (req, res) => {
-  const { id, text } = req.body;
+  const { id, text, priority } = req.body;
+
   try {
     const todo = await db('todos').where('id', id).first();
-    const originalText = todo.text;
-    await db('todos').where('id', id).update({ text: text.trim() });
-    console.log(`id=${id} edit: ${originalText} -> ${text.trim()}`);
+    if (!todo) {
+      return res.status(404).send('Todo not found.');
+    }
+
+    const validPriorities = ['1', '2', '3']; // 1 = High, 2 = Average, 3 = Low
+    if (!validPriorities.includes(priority)) {
+      return res.status(400).send('Invalid priority value.');
+    }
+    await db('todos')
+      .where('id', id)
+      .update({
+        text: text.trim(),
+        priority: parseInt(priority, 10),
+      });
+
+    console.log(`id=${id} updated: text="${text.trim()}", priority=${priority}`);
     res.redirect('/');
   } catch (error) {
     console.error('Error editing todo:', error);
@@ -92,11 +111,12 @@ app.get('/add', async (req, res) => {
     const ids = await db('todos').pluck('id');
     const allIds = new Set(ids);
     let newId = 1;
+    let newPriority = 1;
     while (allIds.has(newId)) {
       newId++;
     }
-    await db('todos').insert({ id: newId, text: newTaskText.trim(), done: false });
-    console.log(`Task added: ID = ${newId}, Text = "${newTaskText.trim()}"`);
+    await db('todos').insert({ id: newId, text: newTaskText.trim(), done: false, priority: newPriority });
+    console.log(`Task added: ID = ${newId}, Text = "${newTaskText.trim()}", Priority = "${newPriority}"`);
     res.redirect('/');
   } catch (error) {
     console.error('Error adding task:', error);

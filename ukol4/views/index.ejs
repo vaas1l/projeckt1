@@ -26,6 +26,7 @@
           <a href="/" class="filter-btn <%= filter === 'all' ? 'active' : '' %>">Vše</a>
           <a href="/?filter=done" class="filter-btn <%= filter === 'done' ? 'active' : '' %>">Udělaní</a>
           <a href="/?filter=not_done" class="filter-btn <%= filter === 'not_done' ? 'active' : '' %>">Neudělaní</a>
+          <a href="/?filter=priority" class="filter-btn <%= filter === 'priority' ? 'active' : '' %>">Priority</a>
         </div>
       </tr>
 
@@ -43,6 +44,11 @@
             <form action="/edit" method="post" style="display: inline;">
               <input type="hidden" name="id" value="<%= todo.id %>" />
               <input type="text" name="text" value="<%= todo.text %>" placeholder="Upravit text" required />
+              <select name="priority">
+                <option value="1" <%= todo.priority === 1 ? 'selected' : '' %>>High</option>
+                <option value="2" <%= todo.priority === 2 ? 'selected' : '' %>>Average</option>
+                <option value="3" <%= todo.priority === 3 ? 'selected' : '' %>>Low</option>
+              </select>
               <button type="submit">Upravit</button>
             </form>
           </td>
