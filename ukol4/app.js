@@ -34,7 +34,8 @@ app.get('/', async (req, res) => {
     } else if (filter === 'priority') {
       filteredTodos = await db('todos').select('*').orderBy('priority', 'asc');
     } else {
-      return res.status(400).send('Invalid filter value');
+      console.warn(`Unknown filter value: ${filter}. Defaulting to 'all'.`);
+      filteredTodos = await db('todos').select('*'); 
     }
 
     res.render('index', {
@@ -49,13 +50,13 @@ app.get('/', async (req, res) => {
 });
 
 app.post('/toggle', async (req, res) => {
-  const { id } = req.body;
+  const { id, filter } = req.body;
    try {
     const todo = await db('todos').where('id', id).first();
     const newDoneStatus = !todo.done;
     await db('todos').where('id', id).update({ done: newDoneStatus });
     console.log(`Todo updated: ID = ${id}, New done status = ${newDoneStatus}`);
-    res.redirect('/');
+    res.redirect(`/?filter=${filter}`); 
   } catch (error) {
     console.error('Error toggling todo:', error);
     res.status(500).send('Internal Server Error');
@@ -63,7 +64,7 @@ app.post('/toggle', async (req, res) => {
 });
 
 app.post('/edit', async (req, res) => {
-  const { id, text, priority } = req.body;
+  const { id, text, priority, filter } = req.body;
 
   try {
     const todo = await db('todos').where('id', id).first();
@@ -83,7 +84,7 @@ app.post('/edit', async (req, res) => {
       });
 
     console.log(`id=${id} updated: text="${text.trim()}", priority=${priority}`);
-    res.redirect('/');
+    res.redirect(`/?filter=${filter}`);
   } catch (error) {
     console.error('Error editing todo:', error);
     res.status(500).send('Internal Server Error');

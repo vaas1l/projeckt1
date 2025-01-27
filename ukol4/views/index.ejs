@@ -37,6 +37,7 @@
           <td class="actions">
             <form action="/toggle" method="POST">
               <input type="hidden" name="id" value="<%= todo.id %>" />
+              <input type="hidden" name="filter" value="<%= filter %>" />
               <button type="submit">zmenit</button>
             </form>
             <a href="/delete?id=<%= todo.id %>" class="zmazat">smazat</a>
@@ -49,6 +50,7 @@
                 <option value="2" <%= todo.priority === 2 ? 'selected' : '' %>>Average</option>
                 <option value="3" <%= todo.priority === 3 ? 'selected' : '' %>>Low</option>
               </select>
+              <input type="hidden" name="filter" value="<%= filter %>" /> 
               <button type="submit">Upravit</button>
             </form>
           </td>
