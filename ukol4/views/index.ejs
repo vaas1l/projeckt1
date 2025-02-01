@@ -4,44 +4,45 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= title %></title>
     <link rel="stylesheet" href="/css/style.css">
+    <title><%= title %></title>
+
   </head>
   <body>
     <h1><%= title %></h1>
+    <h2>Přidat novy zadani</h2>
+      <form action="/add" method="GET" style="margin-bottom: 20px;">
+        <input type="text" name="text" placeholder="Napište zadani" required />
+        <button type="submit">Přidat</button>
+      </form>
+    <div class="filter-container">
+      <a href="/" class="filter-btn <%= filter === 'all' ? 'active' : '' %>">Vše</a>
+      <a href="/?filter=done" class="filter-btn <%= filter === 'done' ? 'active' : '' %>">Udělaní</a>
+      <a href="/?filter=not_done" class="filter-btn <%= filter === 'not_done' ? 'active' : '' %>">Neudělaní</a>
+      <a href="/?filter=priority" class="filter-btn <%= filter === 'priority' ? 'active' : '' %>">Priority</a>
+    </div>
 
     <table>
       <tr>
         <th>Text</th>
         <th>Hotovo</th>
         <th>Akce</th>
-
-        <h2>Přidat novy zadani</h2>
-        <form action="/add" method="GET" style="margin-bottom: 20px;">
-          <input type="text" name="text" placeholder="Napište zadani" required />
-          <button type="submit">Přidat</button>
-        </form>
-
-        <div class="filter-container">
-          <a href="/" class="filter-btn <%= filter === 'all' ? 'active' : '' %>">Vše</a>
-          <a href="/?filter=done" class="filter-btn <%= filter === 'done' ? 'active' : '' %>">Udělaní</a>
-          <a href="/?filter=not_done" class="filter-btn <%= filter === 'not_done' ? 'active' : '' %>">Neudělaní</a>
-          <a href="/?filter=priority" class="filter-btn <%= filter === 'priority' ? 'active' : '' %>">Priority</a>
-        </div>
+        <th>Created At</th>
+        <th>Due Date</th>
       </tr>
-
+    
       <% for (const todo of todos) { %>
         <tr>
           <td><%= todo.text %></td>
           <td><%= todo.done ? 'ano' : 'ne' %></td>
           <td class="actions">
-            <form action="/toggle" method="POST">
+            <form action="/toggle" method="POST" style="display: inline;">
               <input type="hidden" name="id" value="<%= todo.id %>" />
               <input type="hidden" name="filter" value="<%= filter %>" />
               <button type="submit">zmenit</button>
             </form>
             <a href="/delete?id=<%= todo.id %>" class="zmazat">smazat</a>
-
+    
             <form action="/edit" method="post" style="display: inline;">
               <input type="hidden" name="id" value="<%= todo.id %>" />
               <input type="text" name="text" value="<%= todo.text %>" placeholder="Upravit text" required />
@@ -50,8 +51,19 @@
                 <option value="2" <%= todo.priority === 2 ? 'selected' : '' %>>Average</option>
                 <option value="3" <%= todo.priority === 3 ? 'selected' : '' %>>Low</option>
               </select>
-              <input type="hidden" name="filter" value="<%= filter %>" /> 
+              <input type="hidden" name="filter" value="<%= filter %>" />
               <button type="submit">Upravit</button>
+            </form>
+          </td>
+    
+          <td><%= todo.created_at ? new Date(todo.created_at).toLocaleString() : 'N/A' %></td>
+    
+          <td>
+            <form action="/update-due-date" method="POST" style="display: inline;">
+              <input type="hidden" name="id" value="<%= todo.id %>" />
+              <input type="hidden" name="filter" value="<%= filter %>" />  
+              <input type="date" name="due_date" value="<%= todo.due_date || '' %>" required />
+              <button type="submit">Zadat</button>
             </form>
           </td>
         </tr>

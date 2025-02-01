@@ -1,6 +1,7 @@
 import express from 'express'
 import knex from 'knex'
 import knexfile from './knexfile.js'
+import dayjs from 'dayjs'
 
 const port = 3000
 
@@ -40,7 +41,11 @@ app.get('/', async (req, res) => {
 
     res.render('index', {
       title: 'ToDos!',
-      todos: filteredTodos,
+      todos: filteredTodos.map(todo => ({
+        ...todo,
+        due_date: todo.due_date ? dayjs(todo.due_date).format('YYYY-MM-DD') : null,
+        created_at: todo.created_at ? dayjs(todo.created_at).format('YYYY-MM-DD HH:mm:ss') : null
+      })),
       filter,
     });
   } catch (error) {
@@ -108,6 +113,8 @@ app.get('/delete', async (req, res) => {
 
 app.get('/add', async (req, res) => {
   const newTaskText = req.query.text;
+  const dueDate = req.query.due_date;
+
   try {
     const ids = await db('todos').pluck('id');
     const allIds = new Set(ids);
@@ -116,11 +123,32 @@ app.get('/add', async (req, res) => {
     while (allIds.has(newId)) {
       newId++;
     }
-    await db('todos').insert({ id: newId, text: newTaskText.trim(), done: false, priority: newPriority });
-    console.log(`Task added: ID = ${newId}, Text = "${newTaskText.trim()}", Priority = "${newPriority}"`);
+
+    const createdAt = dayjs().format('YYYY-MM-DD HH:mm:ss');
+
+    await db('todos').insert({ id: newId, text: newTaskText.trim(), done: false, priority: newPriority, created_at: createdAt, due_date: dueDate ? dayjs(dueDate).format('YYYY-MM-DD HH:mm:ss') : null  });
+    console.log(`Task added: ID = ${newId}, Text = "${newTaskText.trim()}", Priority = "${newPriority}", CreatedAt = "${createdAt}", DueDate = "${dueDate}"`);
     res.redirect('/');
   } catch (error) {
     console.error('Error adding task:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.post('/update-due-date', async (req, res) => {
+  const { id, due_date, filter } = req.body;
+
+  try {
+    const formattedDueDate = dayjs(due_date).format('YYYY-MM-DD HH:mm:ss');
+
+    await db('todos')
+      .where({ id })
+      .update({ due_date: formattedDueDate });
+
+    console.log(`id=${id} updated due_date to ${formattedDueDate}`);
+    res.redirect(`/?filter=${filter || 'all'}`);
+  } catch (error) {
+    console.error('Error updating due date:', error);
     res.status(500).send('Internal Server Error');
   }
 });
