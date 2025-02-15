@@ -8,6 +8,7 @@ import auth from './routes/auth.js'
 import funkce from './routes/funkce.js'
 import dueDate from './routes/due-date.js'
 import deleteUser from './routes/deleteuser.js'
+import todos from './routes/todos.js'
 
 const port = 3000
 
@@ -24,10 +25,6 @@ app.use(session({
   saveUninitialized: true,
 }));
 
-let id = 1
-
-const todos = []
-
 app.use('/', auth)
 
 app.use('/', funkce)
@@ -35,6 +32,8 @@ app.use('/', funkce)
 app.use('/', dueDate)
 
 app.use('/', deleteUser)
+
+app.use('/api', todos) 
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`)

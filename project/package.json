@@ -1,0 +1,16 @@
+{
+  "name": "todolist",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "concurrently \"yarn server\" \"yarn client\"",
+    "server": "cd server && yarn dev",
+    "client": "cd client && yarn dev",
+    "install-client": "cd client && yarn install",
+    "install-server": "cd server && yarn install"
+  },
+  "dependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
