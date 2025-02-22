@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
-
+import { useRefreshTodos } from '../stores/todos';
 export default function ToggleTaskStatus({ id, done }) {
+    const refreshTodos = useRefreshTodos();
     const handleToggle = async () => {
         try {
             const response = await fetch(`/api/todos/${id}`, {
@@ -13,12 +14,11 @@ export default function ToggleTaskStatus({ id, done }) {
             if (!response.ok) {
                 throw new Error(`Failed to update task status: ${response.statusText}`);
             }
-
-            console.log(`Task ${id} updated to ${!done}`);
-            window.location.reload();
+            refreshTodos();
         } catch (error) {
             console.error('Error updating task status:', error);
         }
+
     };
 
     return (
@@ -31,4 +31,5 @@ export default function ToggleTaskStatus({ id, done }) {
 ToggleTaskStatus.propTypes = {
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     done: PropTypes.bool.isRequired,
+    refreshTodos: PropTypes.func.isRequired,
 };

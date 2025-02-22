@@ -71,5 +71,6 @@ router.put('/todos/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
+    console.log(`Task ${id} updated to ${!done}`);
 });
 export default router;

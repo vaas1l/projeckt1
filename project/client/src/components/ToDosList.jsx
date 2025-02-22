@@ -8,8 +8,11 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
 import ToggleTaskStatus from '../components/ToggleTaskStatus';
+import { useTodos, useRefreshTodos } from '../stores/todos';
 
-export default function ToDosList({ todos = [], refreshTodos }) {
+export default function ToDosList() {
+    const todos = useTodos();
+    const refreshTodos = useRefreshTodos();
 
     const handleDelete = async (id) => {
         try {
@@ -22,7 +25,7 @@ export default function ToDosList({ todos = [], refreshTodos }) {
             }
     
             console.log(`Deleted task ${id}`); 
-            window.location.reload(); 
+            refreshTodos();
         } catch (error) {
             console.error('Error deleting todo:', error);
         }

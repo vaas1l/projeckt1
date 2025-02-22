@@ -4,12 +4,13 @@ import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
+import { useRefreshTodos } from '../stores/todos';
 
-export default function TextZadani({ refreshTodos }) {
+export default function TextZadani() {
     const [text, setText] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-
+    const refreshTodos = useRefreshTodos();
     const handleSubmit = async (event) => {
         event.preventDefault();
 
