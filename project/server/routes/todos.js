@@ -7,10 +7,13 @@ const db = knex(knexfile)
 const router = express.Router()
 
 router.get('/todos', async (req, res) => {
-    const user_id = req.body;
+    const user_id = req.query.user_id;
+    if (!user_id) {
+        return res.status(400).json({ success: false, message: 'User ID is required' });
+    }
     try {
-        const todos = await db('todos').select('*');
-        return res.json(todos);
+        const todos = await db('todos').select('*').where({ user_id });
+        return res.json({ success: true, todos });
     } catch (error) {
         return res.status(500).json({ success: false, error: error.message });
     }
@@ -32,20 +35,28 @@ router.delete('/todos/:id', async (req, res) => {
 });
 
 router.post('/todos', async (req, res) => {
-    const { text } = req.body;
-    const {user_id} = req.body;
+    const { text, user_id } = req.body; 
 
     if (!text) {
         return res.status(400).json({ success: false, message: 'Text is required' });
     }
 
+    if (!user_id) {
+        return res.status(400).json({ success: false, message: 'User ID is required' });
+    }
+
     try {
         const maxIdResult = await db('todos').max('id as maxId').first();
         const newId = maxIdResult?.maxId ? maxIdResult.maxId + 1 : 1;
-        const user_id = req.user;
-
         const [newTodo] = await db('todos')
-            .insert({ id: newId, text, done: 0, priority: 2, created_at: new Date().toISOString(), user_id })
+            .insert({
+                id: newId,
+                text,
+                done: 0,
+                priority: 2,
+                created_at: new Date().toISOString(),
+                user_id
+            })
             .returning('*');
 
         res.status(201).json({ success: true, todo: newTodo });

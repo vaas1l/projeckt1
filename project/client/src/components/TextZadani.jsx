@@ -7,16 +7,22 @@ import PropTypes from 'prop-types';
 import { useRefreshTodos } from '../stores/todos';
 
 export default function TextZadani() {
-    const user_id = localStorage.getItem('user_id');
+    const user_id = localStorage.getItem('user_id'); 
     const [text, setText] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const refreshTodos = useRefreshTodos();
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         if (!text.trim()) {
             setError('Task text cannot be empty!');
+            return;
+        }
+
+        if (!user_id) {
+            setError('Error: User is not authenticated.');
             return;
         }
 
@@ -27,7 +33,7 @@ export default function TextZadani() {
             const response = await fetch('http://localhost:5173/api/todos', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text, done: 0 , priority: 2, user_id: user_id }),
+                body: JSON.stringify({ text, done: 0, priority: 2, user_id }),
             });
 
             if (!response.ok) {

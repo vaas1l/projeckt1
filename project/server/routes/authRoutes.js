@@ -6,7 +6,6 @@ import bcrypt from 'bcrypt';
 const db = knex(knexfile);
 const router = express.Router();
 
-// Register a new user
 router.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
 
@@ -60,6 +59,10 @@ router.post('/login', async (req, res) => {
         console.error('Login error:', error);
         res.status(500).json({ error: 'Internal server error.' });
     }
+});
+
+router.post('/logout', (req, res) => {
+    return res.json({ success: true, message: 'Logged out successfully' });
 });
 
 // Get user information

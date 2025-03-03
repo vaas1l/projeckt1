@@ -1,14 +1,15 @@
-import * as React from 'react';
-import { CssVarsProvider, useColorScheme } from '@mui/joy/styles';
-import Sheet from '@mui/joy/Sheet';
-import CssBaseline from '@mui/joy/CssBaseline';
-import Typography from '@mui/joy/Typography';
-import FormControl from '@mui/joy/FormControl';
-import FormLabel from '@mui/joy/FormLabel';
-import Input from '@mui/joy/Input';
-import Button from '@mui/joy/Button';
-import Link from '@mui/joy/Link';
-import { useNavigate } from 'react-router-dom';
+import * as React from "react";
+import { CssVarsProvider, useColorScheme } from "@mui/joy/styles";
+import Sheet from "@mui/joy/Sheet";
+import CssBaseline from "@mui/joy/CssBaseline";
+import Typography from "@mui/joy/Typography";
+import FormControl from "@mui/joy/FormControl";
+import FormLabel from "@mui/joy/FormLabel";
+import Input from "@mui/joy/Input";
+import Button from "@mui/joy/Button";
+import Link from "@mui/joy/Link";
+import { useNavigate } from "react-router-dom";
+import { useSetRefreshTodos } from '../stores/todos';
 
 function ModeToggle() {
   const { mode, setMode } = useColorScheme();
@@ -23,49 +24,46 @@ function ModeToggle() {
   }
 
   return (
-    <Button variant="soft" onClick={() => setMode(mode === 'light' ? 'dark' : 'light')}>
-      {mode === 'light' ? 'Dark Mode' : 'Light Mode'}
+    <Button variant="soft" onClick={() => setMode(mode === "light" ? "dark" : "light")}>
+      {mode === "light" ? "Dark Mode" : "Light Mode"}
     </Button>
   );
 }
 
 export default function LoginFinal() {
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [error, setError] = React.useState('');
-  const navigate = useNavigate(); 
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [error, setError] = React.useState("");
+  const navigate = useNavigate();
+  const setRefreshTodos = useSetRefreshTodos(); 
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError('');
+    setError("");
 
     try {
-      const response = await fetch('http://localhost:5173/api/auth/login', { 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("http://localhost:5173/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
-      console.log(' Received data from the server:', data);
+      console.log("Received data from the server:", data);
 
       if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Login failed');
+        throw new Error(data.error || "Login failed");
       }
 
-      if (!data.user_id) {
-        console.error(' Error: server did not return user_id');
-        setError('Authorization failed');
-        return;
-      }
+      localStorage.setItem("user_id", data.user_id);
+      console.log("user_id saved:", localStorage.getItem("user_id"));
 
-      localStorage.setItem('user_id', data.user_id);
-      localStorage.setItem('authToken', data.token);
-      console.log(' user_id is saved:', localStorage.getItem('user_id'));
+      setRefreshTodos(); 
+      console.log("Todos refreshed after login");
 
-      navigate('/'); 
+      navigate("/");
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       setError(error.message);
     }
   };
@@ -80,15 +78,15 @@ export default function LoginFinal() {
           onSubmit={handleSubmit}
           sx={{
             width: 300,
-            mx: 'auto',
+            mx: "auto",
             my: 4,
             py: 3,
             px: 2,
-            display: 'flex',
-            flexDirection: 'column',
+            display: "flex",
+            flexDirection: "column",
             gap: 2,
-            borderRadius: 'sm',
-            boxShadow: 'md',
+            borderRadius: "sm",
+            boxShadow: "md",
           }}
           variant="outlined"
         >
@@ -126,7 +124,7 @@ export default function LoginFinal() {
 
           <Typography
             endDecorator={<Link href="/register">Register</Link>}
-            sx={{ fontSize: 'sm', alignSelf: 'center' }}
+            sx={{ fontSize: "sm", alignSelf: "center" }}
           >
             Don&apos;t have an account?
           </Typography>

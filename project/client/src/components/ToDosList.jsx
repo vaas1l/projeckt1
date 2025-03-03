@@ -16,7 +16,12 @@ export default function ToDosList({ filter }) {
     const todos = useTodos();
     const refreshTodos = useRefreshTodos();
     const user_id = localStorage.getItem('user_id');
-    console.log(user_id);
+
+    console.log("Current user ID:", user_id);
+
+    if (!user_id) {
+        return <p>Please log in to see your tasks.</p>;
+    }
 
     const handleDelete = async (id) => {
         try {
@@ -34,15 +39,19 @@ export default function ToDosList({ filter }) {
         }
     };
 
-    const filteredTodos = todos
-        .filter(todo => {
-            if (filter === 'all') return true;
-            if (filter === 'done') return todo.done === 1 || todo.done === true;
-            if (filter === 'not_done') return todo.done === 0 || todo.done === false;
-            if (filter === 'priority') return [1, 2, 3].includes(todo.priority);
-            return true;
-        })
-        .sort((a, b) => a.priority - b.priority);
+    const userTodos = todos.filter(todo => todo.user_id == user_id);
+
+    const filteredTodos = userTodos.filter(todo => {
+        if (filter === 'all') return true;
+        if (filter === 'done') return todo.done === 1 || todo.done === true;
+        if (filter === 'not_done') return todo.done === 0 || todo.done === false;
+        if (filter === 'priority') return [1, 2, 3].includes(todo.priority);
+        return true;
+    });
+
+    if (filter === 'priority') {
+        filteredTodos.sort((a, b) => a.priority - b.priority);
+    }
 
     return (
         <TableContainer component={Paper}>
@@ -59,33 +68,39 @@ export default function ToDosList({ filter }) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {filteredTodos.map((todo, index) => (
-                        <TableRow key={todo.id || index}>
-                            <TableCell>{index + 1}</TableCell>
-                            <TableCell align="left">{todo.text}</TableCell>
-                            <TableCell align="center">
-                                {todo.done === 1 || todo.done === true ? 'Ano' : 'Ne'}
-                            </TableCell>
-                            <TableCell align="center">
-                                <TodoAkce id={todo.id} priority={todo.priority} refreshTodos={refreshTodos} />
-                            </TableCell>
-                            <TableCell align="center">
-                                {todo.created_at
-                                    ? new Date(todo.created_at).toISOString().slice(0, 10)
-                                    : 'N/A'
-                                }
-                            </TableCell>
-                            <TableCell align="center">
-                                <DueDate id={todo.id} dueDate={todo.due_date} refreshTodos={refreshTodos} />
-                            </TableCell>
-                            <TableCell align="center">
-                                <ToggleTaskStatus id={todo.id} done={todo.done === 1 || todo.done === true} refreshTodos={refreshTodos} />
-                                <Button variant="contained" color="error" onClick={() => handleDelete(todo.id)}>
-                                    DELETE
-                                </Button>
-                            </TableCell>
+                    {filteredTodos.length === 0 ? (
+                        <TableRow>
+                            <TableCell colSpan={7} align="center">No tasks found.</TableCell>
                         </TableRow>
-                    ))}
+                    ) : (
+                        filteredTodos.map((todo, index) => (
+                            <TableRow key={todo.id || index}>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell align="left">{todo.text}</TableCell>
+                                <TableCell align="center">
+                                    {todo.done === 1 || todo.done === true ? 'Ano' : 'Ne'}
+                                </TableCell>
+                                <TableCell align="center">
+                                    <TodoAkce id={todo.id} priority={todo.priority} refreshTodos={refreshTodos} />
+                                </TableCell>
+                                <TableCell align="center">
+                                    {todo.created_at
+                                        ? new Date(todo.created_at).toISOString().slice(0, 10)
+                                        : 'N/A'
+                                    }
+                                </TableCell>
+                                <TableCell align="center">
+                                    <DueDate id={todo.id} dueDate={todo.due_date} refreshTodos={refreshTodos} />
+                                </TableCell>
+                                <TableCell align="center">
+                                    <ToggleTaskStatus id={todo.id} done={todo.done === 1 || todo.done === true} refreshTodos={refreshTodos} />
+                                    <Button variant="contained" color="error" onClick={() => handleDelete(todo.id)}>
+                                        DELETE
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    )}
                 </TableBody>
             </Table>
         </TableContainer>

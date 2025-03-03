@@ -1,37 +1,27 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSetRefreshTodos } from '../stores/todos';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const setRefreshTodos = useSetRefreshTodos();
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
         setError(null);
 
-        try {
-            const response = await fetch('http://localhost:5173/api/auth/login', { 
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
-            });
+        const user_id = "123"; 
 
-            const data = await response.json();
-            console.log('Server response:', data); 
+        localStorage.setItem('user_id', user_id);
+        console.log('user_id saved:', localStorage.getItem('user_id'));
 
-            if (!response.ok || !data.success) {
-                throw new Error(data.error || 'Login failed.');
-            }
 
-            localStorage.setItem('user_id', data.user_id); 
-            console.log('user_id saved:', localStorage.getItem('user_id'));
-            navigate('/');
-        } catch (error) {
-            console.error('Login error:', error);
-            setError(error.message);
-        }
+        setRefreshTodos();
+
+        navigate('/');
     };
 
     return (

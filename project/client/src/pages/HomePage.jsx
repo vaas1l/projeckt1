@@ -10,18 +10,29 @@ import { useSetTodos, useSetRefreshTodos } from '../stores/todos';
 export default function HomePage() {
     const setTodos = useSetTodos();
     const setRefreshTodos = useSetRefreshTodos();
+    const user_id = localStorage.getItem('user_id');
 
     const fetchData = useCallback(async () => {
+        if (!user_id) {
+            console.error('No user_id found, cannot fetch todos.');
+            return;
+        }
+
         try {
-            console.log('Fetching updated todos...');
-            const response = await fetch('/api/todos');
+            console.log(`Fetching todos for user_id: ${user_id}...`);
+            const response = await fetch(`/api/todos?user_id=${user_id}`);
             const data = await response.json();
-            console.log('Updated todos:', data);
-            setTodos(data);
+            
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || 'Failed to fetch todos');
+            }
+
+            console.log('Updated todos:', data.todos);
+            setTodos(data.todos); 
         } catch (error) {
             console.error('Error fetching todos:', error);
         }
-    }, [setTodos]);
+    }, [setTodos, user_id]);
 
     const refreshTodos = useCallback(async () => {
         try {
@@ -40,7 +51,7 @@ export default function HomePage() {
         setRefreshTodos(refreshTodos);
     }, [refreshTodos, setRefreshTodos]);
 
-    const [ setFilter] = useState(null);
+    const [ filter ,setFilter] = useState('all');
 
 
 
@@ -49,7 +60,7 @@ export default function HomePage() {
             <NavBar/>
             <TextZadani/>
             <Filtry setFilter={setFilter}/>
-            <ToDosList setFilter={setFilter}  />
+            <ToDosList filter={filter}  />
         </RootLayout>
     );
 }
