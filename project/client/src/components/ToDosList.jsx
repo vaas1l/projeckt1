@@ -9,27 +9,40 @@ import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
 import ToggleTaskStatus from '../components/ToggleTaskStatus';
 import { useTodos, useRefreshTodos } from '../stores/todos';
+import TodoAkce from "../components/TodoAkce";
+import DueDate from "../components/DueDate";
 
-export default function ToDosList() {
+export default function ToDosList({ filter }) {
     const todos = useTodos();
     const refreshTodos = useRefreshTodos();
+    const user_id = localStorage.getItem('user_id');
+    console.log(user_id);
 
     const handleDelete = async (id) => {
         try {
             const response = await fetch(`/api/todos/${id}`, {
                 method: 'DELETE',
             });
-    
+
             if (!response.ok) {
                 throw new Error('Failed to delete todo');
             }
-    
-            console.log(`Deleted task ${id}`); 
+
             refreshTodos();
         } catch (error) {
             console.error('Error deleting todo:', error);
         }
     };
+
+    const filteredTodos = todos
+        .filter(todo => {
+            if (filter === 'all') return true;
+            if (filter === 'done') return todo.done === 1 || todo.done === true;
+            if (filter === 'not_done') return todo.done === 0 || todo.done === false;
+            if (filter === 'priority') return [1, 2, 3].includes(todo.priority);
+            return true;
+        })
+        .sort((a, b) => a.priority - b.priority);
 
     return (
         <TableContainer component={Paper}>
@@ -46,16 +59,27 @@ export default function ToDosList() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {todos.map((todo, index) => (
-                        <TableRow key={todo.id || index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                    {filteredTodos.map((todo, index) => (
+                        <TableRow key={todo.id || index}>
                             <TableCell>{index + 1}</TableCell>
                             <TableCell align="left">{todo.text}</TableCell>
-                            <TableCell align="center">{todo.done ? 'Ano' : 'Ne'}</TableCell>
-                            <TableCell align="center">{todo.akce ?? 'N/A'}</TableCell>
-                            <TableCell align="center">{todo.createdAt || 'N/A'}</TableCell>
-                            <TableCell align="center">{todo.dueDate || 'N/A'}</TableCell>
                             <TableCell align="center">
-                                <ToggleTaskStatus id={todo.id} done={todo.done} refreshTodos={refreshTodos} />
+                                {todo.done === 1 || todo.done === true ? 'Ano' : 'Ne'}
+                            </TableCell>
+                            <TableCell align="center">
+                                <TodoAkce id={todo.id} priority={todo.priority} refreshTodos={refreshTodos} />
+                            </TableCell>
+                            <TableCell align="center">
+                                {todo.created_at
+                                    ? new Date(todo.created_at).toISOString().slice(0, 10)
+                                    : 'N/A'
+                                }
+                            </TableCell>
+                            <TableCell align="center">
+                                <DueDate id={todo.id} dueDate={todo.due_date} refreshTodos={refreshTodos} />
+                            </TableCell>
+                            <TableCell align="center">
+                                <ToggleTaskStatus id={todo.id} done={todo.done === 1 || todo.done === true} refreshTodos={refreshTodos} />
                                 <Button variant="contained" color="error" onClick={() => handleDelete(todo.id)}>
                                     DELETE
                                 </Button>
@@ -69,13 +93,5 @@ export default function ToDosList() {
 }
 
 ToDosList.propTypes = {
-    todos: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-        text: PropTypes.string.isRequired,
-        done: PropTypes.bool.isRequired,
-        akce: PropTypes.string,
-        createdAt: PropTypes.string,
-        dueDate: PropTypes.string,
-    })),
-    refreshTodos: PropTypes.func.isRequired,
+    filter: PropTypes.string.isRequired,
 };

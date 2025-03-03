@@ -1,9 +1,10 @@
+
 import NavBar from '../components/NavBar';
 import TextZadani from '../components/TextZadani';
 import Filtry from '../components/Filtry';
 import ToDosList from '../components/ToDosList';
 import RootLayout from '../layout/RootLayout';
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { useSetTodos, useSetRefreshTodos } from '../stores/todos';
 
 export default function HomePage() {
@@ -39,12 +40,16 @@ export default function HomePage() {
         setRefreshTodos(refreshTodos);
     }, [refreshTodos, setRefreshTodos]);
 
+    const [ setFilter] = useState(null);
+
+
+
     return (
         <RootLayout>
-            <NavBar />
+            <NavBar/>
             <TextZadani/>
-            <Filtry />
-            <ToDosList />
+            <Filtry setFilter={setFilter}/>
+            <ToDosList setFilter={setFilter}  />
         </RootLayout>
     );
 }

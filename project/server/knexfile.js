@@ -3,5 +3,5 @@ export default {
     connection: {
       filename: './todo_db.sqlite',
     },
-    useNullAsDefault: false,
+    useNullAsDefault: true,
   }

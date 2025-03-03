@@ -2,10 +2,10 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.up =  async function(knex) {
-await knex.schema.alterTable('todos', (table) => {
-    table.integer('priority').notNullable().unsigned().defaultTo(0)
-});
+exports.up = function(knex) {
+    return knex.schema.table('todos', function(table) {
+        table.integer('priority').defaultTo(2); 
+    });
 };
 
 /**
@@ -13,7 +13,7 @@ await knex.schema.alterTable('todos', (table) => {
  * @returns { Promise<void> }
  */
 exports.down =  async function(knex) {
-await knex.schema.alterTable('todos', (table) => {
-    table.dropColumn('priority')
-    })
-};
+    await knex.schema.alterTable('todos', (table) => {
+        table.dropColumn('priority')
+        })
+    };

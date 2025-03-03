@@ -14,10 +14,10 @@ export default function ToggleTaskStatus({ id, done }) {
             if (!response.ok) {
                 throw new Error(`Failed to update task status: ${response.statusText}`);
             }
-            refreshTodos();
         } catch (error) {
             console.error('Error updating task status:', error);
         }
+        refreshTodos();
 
     };
 

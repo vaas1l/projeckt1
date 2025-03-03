@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import { useRefreshTodos } from '../stores/todos';
 
 export default function TextZadani() {
+    const user_id = localStorage.getItem('user_id');
     const [text, setText] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -23,10 +24,10 @@ export default function TextZadani() {
         setError(null);
 
         try {
-            const response = await fetch('/api/todos', {
+            const response = await fetch('http://localhost:5173/api/todos', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text, done: false }),
+                body: JSON.stringify({ text, done: 0 , priority: 2, user_id: user_id }),
             });
 
             if (!response.ok) {
