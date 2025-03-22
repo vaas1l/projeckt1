@@ -15,13 +15,9 @@ import DueDate from "../components/DueDate";
 export default function ToDosList({ filter }) {
     const todos = useTodos();
     const refreshTodos = useRefreshTodos();
-    const user_id = localStorage.getItem('user_id');
 
-    console.log("Current user ID:", user_id);
 
-    if (!user_id) {
-        return <p>Please log in to see your tasks.</p>;
-    }
+
 
     const handleDelete = async (id) => {
         try {
@@ -39,9 +35,7 @@ export default function ToDosList({ filter }) {
         }
     };
 
-    const userTodos = todos.filter(todo => todo.user_id == user_id);
-
-    const filteredTodos = userTodos.filter(todo => {
+    const filteredTodos = todos.filter(todo => {
         if (filter === 'all') return true;
         if (filter === 'done') return todo.done === 1 || todo.done === true;
         if (filter === 'not_done') return todo.done === 0 || todo.done === false;

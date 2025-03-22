@@ -3,24 +3,17 @@ import NavBar from '../components/NavBar';
 import TextZadani from '../components/TextZadani';
 import Filtry from '../components/Filtry';
 import ToDosList from '../components/ToDosList';
-import RootLayout from '../layout/RootLayout';
 import { useEffect, useCallback, useState } from 'react';
 import { useSetTodos, useSetRefreshTodos } from '../stores/todos';
 
 export default function HomePage() {
     const setTodos = useSetTodos();
     const setRefreshTodos = useSetRefreshTodos();
-    const user_id = localStorage.getItem('user_id');
 
     const fetchData = useCallback(async () => {
-        if (!user_id) {
-            console.error('No user_id found, cannot fetch todos.');
-            return;
-        }
 
         try {
-            console.log(`Fetching todos for user_id: ${user_id}...`);
-            const response = await fetch(`/api/todos?user_id=${user_id}`);
+            const response = await fetch(`/api/todos`);
             const data = await response.json();
             
             if (!response.ok || !data.success) {
@@ -32,7 +25,7 @@ export default function HomePage() {
         } catch (error) {
             console.error('Error fetching todos:', error);
         }
-    }, [setTodos, user_id]);
+    }, [setTodos,]);
 
     const refreshTodos = useCallback(async () => {
         try {
@@ -56,11 +49,11 @@ export default function HomePage() {
 
 
     return (
-        <RootLayout>
+        <>
             <NavBar/>
             <TextZadani/>
             <Filtry setFilter={setFilter}/>
             <ToDosList filter={filter}  />
-        </RootLayout>
+        </>
     );
 }

@@ -147,6 +147,11 @@ bcrypt@^5.1.1:
     "@mapbox/node-pre-gyp" "^1.0.11"
     node-addon-api "^5.0.0"
 
+bcryptjs@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/bcryptjs/-/bcryptjs-3.0.2.tgz#caadcca1afefe372ed6e20f86db8e8546361c1ca"
+  integrity sha512-k38b3XOZKv60C4E2hVsXTolJWfkGRMbILBIe2IBITXciy5bOsTKot5kDrf3ZfufQtQOUN5mXceUEpU1rTl9Uog==
+
 binary-extensions@^2.0.0:
   version "2.3.0"
   resolved "https://registry.npmjs.org/binary-extensions/-/binary-extensions-2.3.0.tgz"
@@ -335,6 +340,13 @@ concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz"
   integrity sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
+
+connect-session-knex@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/connect-session-knex/-/connect-session-knex-5.0.0.tgz#e98931a85c383d4fdc85e16b411151a32088da2b"
+  integrity sha512-LNmgZriKjmZPkPDsB8rspdqdrsQ+aAoSXFDJA3/1OQxt3nlAWzUNghhTsFAiY95Pcp/tTS18n8rRwiBCDBIz5g==
+  dependencies:
+    knex "3"
 
 console-control-strings@^1.0.0, console-control-strings@^1.1.0:
   version "1.1.0"
@@ -550,7 +562,7 @@ expand-template@^2.0.3:
 
 express-session@^1.18.1:
   version "1.18.1"
-  resolved "https://registry.npmjs.org/express-session/-/express-session-1.18.1.tgz"
+  resolved "https://registry.yarnpkg.com/express-session/-/express-session-1.18.1.tgz#88d0bbd41878882840f24ec6227493fcb167e8d5"
   integrity sha512-a5mtTqEaZvBCL9A9aqkrtfz+3SMDhOVUnjafjo+s7A9Txkq+SVX2DLvSp1Zrv4uCXa3lMSK3viWnh9Gg07PBUA==
   dependencies:
     cookie "0.7.2"
@@ -1001,7 +1013,7 @@ jws@^3.2.2:
     jwa "^1.4.1"
     safe-buffer "^5.0.1"
 
-knex@^3.1.0:
+knex@3, knex@^3.1.0:
   version "3.1.0"
   resolved "https://registry.npmjs.org/knex/-/knex-3.1.0.tgz"
   integrity sha512-GLoII6hR0c4ti243gMs5/1Rb3B+AjwMOfjYm97pu0FOQa7JH56hgBxYf5WK2525ceSbBY1cjeZ9yk99GPMB6Kw==
@@ -1381,6 +1393,27 @@ parseurl@~1.3.3:
   resolved "https://registry.npmjs.org/parseurl/-/parseurl-1.3.3.tgz"
   integrity sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==
 
+passport-local@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/passport-local/-/passport-local-1.0.0.tgz#1fe63268c92e75606626437e3b906662c15ba6ee"
+  integrity sha512-9wCE6qKznvf9mQYYbgJ3sVOHmCWoUNMVFoZzNoznmISbhnNNPhN9xfY3sLmScHMetEJeoY7CXwfhCe7argfQow==
+  dependencies:
+    passport-strategy "1.x.x"
+
+passport-strategy@1.x.x:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/passport-strategy/-/passport-strategy-1.0.0.tgz#b5539aa8fc225a3d1ad179476ddf236b440f52e4"
+  integrity sha512-CB97UUvDKJde2V0KDWWB3lyf6PC3FaZP7YxZ2G8OAtn9p4HI9j9JLP9qjOGZFvyl8uwNT8qM+hGnz/n16NI7oA==
+
+passport@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/passport/-/passport-0.7.0.tgz#3688415a59a48cf8068417a8a8092d4492ca3a05"
+  integrity sha512-cPLl+qZpSc+ireUvt+IzqbED1cHHkDoVYMo30jbJIdOOjQ1MQYZBPiNvmi8UM6lJuOpTPXJGZQk0DtC4y61MYQ==
+  dependencies:
+    passport-strategy "1.x.x"
+    pause "0.0.1"
+    utils-merge "^1.0.1"
+
 path-is-absolute@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/path-is-absolute/-/path-is-absolute-1.0.1.tgz"
@@ -1395,6 +1428,11 @@ path-to-regexp@0.1.12:
   version "0.1.12"
   resolved "https://registry.npmjs.org/path-to-regexp/-/path-to-regexp-0.1.12.tgz"
   integrity sha512-RA1GjUVMnvYFxuqovrEqZoxxW5NUZqbwKtYz/Tt7nXerk0LbLblQmrsgdeOxV5SFHf0UDggjS/bSeOZwt1pmEQ==
+
+pause@0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/pause/-/pause-0.0.1.tgz#1d408b3fdb76923b9543d96fb4c9dfd535d9cb5d"
+  integrity sha512-KG8UEiEVkR3wGEb4m5yZkVCzigAD+cVEJck2CzYZO37ZGJfctvVptVO192MwrtPhzONn6go8ylnOdMhKqi4nfg==
 
 pg-connection-string@2.6.2:
   version "2.6.2"
@@ -1883,7 +1921,7 @@ util-deprecate@^1.0.1:
   resolved "https://registry.npmjs.org/util-deprecate/-/util-deprecate-1.0.2.tgz"
   integrity sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==
 
-utils-merge@1.0.1:
+utils-merge@1.0.1, utils-merge@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/utils-merge/-/utils-merge-1.0.1.tgz"
   integrity sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==

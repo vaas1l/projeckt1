@@ -5,9 +5,10 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
 import { useRefreshTodos } from '../stores/todos';
+import { useAuthStore } from '../stores/auth'; 
 
 export default function TextZadani() {
-    const user_id = localStorage.getItem('user_id'); 
+    const user_id = useAuthStore((state) => state.user?.id) || localStorage.getItem('user_id');
     const [text, setText] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -40,8 +41,8 @@ export default function TextZadani() {
                 throw new Error(`Server error: ${response.status} ${response.statusText}`);
             }
 
-            setText(''); 
-            refreshTodos(); 
+            setText('');
+            refreshTodos();
         } catch (error) {
             setError(`Failed to add task: ${error.message}`);
         } finally {
@@ -57,11 +58,11 @@ export default function TextZadani() {
                     variant="outlined"
                     value={text}
                     onChange={(e) => setText(e.target.value)}
-                    disabled={loading}
+                    disabled={loading || !user_id}
                     error={!!error}
-                    helperText={error}
+                    helperText={error || (!user_id ? 'You must be logged in to add tasks' : '')}
                 />
-                <Button type="submit" variant="contained" disabled={loading}>
+                <Button type="submit" variant="contained" disabled={loading || !user_id}>
                     {loading ? 'Adding...' : 'Add'}
                 </Button>
             </Stack>

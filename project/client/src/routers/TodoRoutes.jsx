@@ -1,22 +1,37 @@
 import { lazy } from "react";
-import { Navigate } from "react-router-dom";
+
+import RootLayout from "../layout/RootLayout";
+import AuthGuard from "../layout/AuthGuard";
+import GuestGuard from "../layout/GuestGuard";
 
 const HomePage = lazy(() => import("../pages/HomePage"));
-const LoginPage = lazy(() => import("../components/login"));
-const RegisterPage = lazy(() => import("../components/register"));
+const LoginPage = lazy(() => import("../pages/LoginPage"));
+const ErrorPage = lazy(() => import("../pages/ErrorPage"));
 
-
-const isAuthenticated = () => {
-    return !!localStorage.getItem("user_id");
+const todoRoutes = {
+    path: "/",
+    children: [
+        {
+            path: "/login",
+            element: (
+                <GuestGuard>
+                    <LoginPage />
+                </GuestGuard>
+            ),
+        },
+        {
+            path: "/",
+            element: <AuthGuard> <RootLayout />  </AuthGuard> ,
+            children: [
+                {
+                    path: "",
+                    element: 
+                        <HomePage />
+                },
+            ],
+        },
+    ],
+    errorElement: <ErrorPage />,
 };
-
-const todoRoutes = [
-    { 
-        path: "/", 
-        element: isAuthenticated() ? <HomePage /> : <Navigate to="/login" /> 
-    },
-    { path: "/login", element: <LoginPage /> },
-    { path: "/register", element: <RegisterPage /> },
-];
 
 export default todoRoutes;

@@ -2,6 +2,7 @@ import express from 'express';
 import knex from 'knex';
 import knexfile from '../knexfile.js';
 import bcrypt from 'bcrypt';
+import passport from 'passport';
 
 const db = knex(knexfile);
 const router = express.Router();
@@ -37,49 +38,83 @@ router.post('/register', async (req, res) => {
 // Login a user
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
-
     if (!email || !password) {
         return res.status(400).json({ error: 'All fields are required.' });
     }
 
-    try {
-        const user = await db('users').where({ email }).first();
+    req.body.username = email;
+
+    passport.authenticate('local', (err, user, options) => {
+        if (err) {
+            return res.status(500).json({ error: 'Failed to login' });
+        }
+
         if (!user) {
-            return res.status(401).json({ error: 'Invalid email or password.' });
+            return res.status(401).json({ error: options?.message || 'User not found' });
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ error: 'Invalid email or password.' });
-        }
+        req.login(user, (error) => {
+            if (error) {
+                return res.status(500).json({ error: 'Failed to login' });
+            }
 
-        console.log(`User ${email} logged in successfully.`);
-        res.json({ success: true, user_id: user.id, message: 'Login successful.' });
-    } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ error: 'Internal server error.' });
-    }
+            return res.json(req.user);
+        });
+    })(req, res);
 });
 
 router.post('/logout', (req, res) => {
-    return res.json({ success: true, message: 'Logged out successfully' });
-});
+    if (!req.user) {
+        return res.status(200).json({
+            success: true,
+            msg: "User is not logged in",
+        });
+    }
 
-// Get user information
-router.get('/user/:id', async (req, res) => {
-    const { id } = req.params;
-
-    try {
-        const user = await db('users').where({ id }).first();
-        if (!user) {
-            return res.status(404).json({ error: 'User not found.' });
+    req.logout((err) => {
+        if (err) {
+            return res.status(500).json({
+                error: 'Failed to log out',
+            });
         }
 
-        res.json({ success: true, user: { id: user.id, email: user.email } });
-    } catch (error) {
-        console.error('Error fetching user:', error);
-        res.status(500).json({ error: 'Internal server error.' });
-    }
+        req.session.destroy(() => {
+            return res.status(200).json({ success: true, msg: 'Logged out' });
+        });
+    });
 });
+
+// Check if user is logged in
+router.get('/is-authenticated', (req, res) => {
+    if (req.isAuthenticated()) {
+        return res.json({ success: true, user: req.user });
+    }
+
+    res.status(200).json({ error: 'User not logged in' });
+});
+
+router.get('/current-user', async (req, res) => {
+    if (!req.isAuthenticated()) {
+        return res.status(401).json({ error: 'User not logged in' });
+    }
+
+    try {
+        const user = await db('users')
+            .where({ id: req.user.id })
+            .select('id', 'username', 'email')
+            .first();
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.json({ success: true, user });
+    } catch (error) {
+        console.error('Failed to get user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+})
+
 
 export default router;

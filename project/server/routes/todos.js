@@ -7,7 +7,8 @@ const db = knex(knexfile)
 const router = express.Router()
 
 router.get('/todos', async (req, res) => {
-    const user_id = req.query.user_id;
+    const user_id = req.user.id;
+
     if (!user_id) {
         return res.status(400).json({ success: false, message: 'User ID is required' });
     }
@@ -35,8 +36,10 @@ router.delete('/todos/:id', async (req, res) => {
 });
 
 router.post('/todos', async (req, res) => {
-    const { text, user_id } = req.body; 
+    const { text } = req.body; 
 
+    const user_id = req.user.id;
+    
     if (!text) {
         return res.status(400).json({ success: false, message: 'Text is required' });
     }

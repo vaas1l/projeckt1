@@ -1,7 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom'
-import todoRoutes from './TodoRoutes';
+import TodoRoutes from './TodoRoutes';
+import AuthRoutes from './AuthRoutes';
+
 function Router() {
-  return createBrowserRouter([todoRoutes]);
+  return createBrowserRouter([TodoRoutes, AuthRoutes]);
 }
 
 export default Router

@@ -1,25 +1,24 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { RouterProvider } from 'react-router-dom';
 import { Suspense } from 'react';
-import todoRoutes from './routers/TodoRoutes';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import Router from './routers';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 const theme = createTheme({
-  shape: { borderRadius: 4 }, 
+  shape: { borderRadius: 4 },
 });
 
 export default function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline /> {}
-      <Router>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
         <Suspense fallback={<div>Loading...</div>}>
-          <Routes>
-            {todoRoutes.map((route, index) => (
-              <Route key={index} path={route.path} element={route.element} />
-            ))}
-          </Routes>
+          <RouterProvider router={Router()} />
         </Suspense>
-      </Router>
-    </ThemeProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }

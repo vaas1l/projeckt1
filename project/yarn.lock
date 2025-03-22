@@ -534,6 +534,18 @@
   resolved "https://registry.npmjs.org/@popperjs/core/-/core-2.11.8.tgz"
   integrity sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==
 
+"@tanstack/query-core@5.69.0":
+  version "5.69.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.69.0.tgz#c434505987ade936dc53e6e27aa1406b0295516f"
+  integrity sha512-Kn410jq6vs1P8Nm+ZsRj9H+U3C0kjuEkYLxbiCyn3MDEiYor1j2DGVULqAz62SLZtUZ/e9Xt6xMXiJ3NJ65WyQ==
+
+"@tanstack/react-query@^5.69.0":
+  version "5.69.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.69.0.tgz#8d58e800854cc11d0aa2c39569f53ae32ba442a9"
+  integrity sha512-Ift3IUNQqTcaFa1AiIQ7WCb/PPy8aexZdq9pZWLXhfLcLxH0+PZqJ2xFImxCpdDZrFRZhLJrh76geevS5xjRhA==
+  dependencies:
+    "@tanstack/query-core" "5.69.0"
+
 "@tootallnate/once@1":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
@@ -1539,6 +1551,11 @@ lines-and-columns@^1.1.6:
   version "1.2.4"
   resolved "https://registry.npmjs.org/lines-and-columns/-/lines-and-columns-1.2.4.tgz"
   integrity sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==
+
+loader@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/loader/-/loader-2.1.1.tgz#8848b12a3f00572e5a4249333ccdac79773fb402"
+  integrity sha512-Z6nHbyKiECMexVUmpIAVXp+f+8okRtfiMAQ9j0eTtImCghxSqQwrbeSiAyCYKBnfvRlgXLdQt0tPuaZmcBQzpw==
 
 lodash@^4.17.21:
   version "4.17.21"

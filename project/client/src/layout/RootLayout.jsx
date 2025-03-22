@@ -1,8 +1,6 @@
 import { Container } from '@mui/material'
-import React from 'react'
+import { Outlet } from 'react-router-dom'
 
-export default function RootLayout({ children }) {
-  return (
-    <Container maxWidth={false}>{children}</Container>
-  )
+export default function RootLayout() {
+  return <Container maxWidth={false}><Outlet /></Container>
 }
