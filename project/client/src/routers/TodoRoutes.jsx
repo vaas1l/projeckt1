@@ -5,7 +5,7 @@ import AuthGuard from "../layout/AuthGuard";
 import GuestGuard from "../layout/GuestGuard";
 
 const HomePage = lazy(() => import("../pages/HomePage"));
-const LoginPage = lazy(() => import("../pages/LoginPage"));
+const LoginPage = lazy(() => import("../pages/loginPage"));
 const ErrorPage = lazy(() => import("../pages/ErrorPage"));
 
 const todoRoutes = {

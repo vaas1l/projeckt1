@@ -18,6 +18,7 @@ export default function ButtonAppBar() {
             .catch(error => console.error('Logout failed:', error));
     };
 
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static" color="default">
@@ -35,6 +36,8 @@ export default function ButtonAppBar() {
                         ToDos!
                     </Typography>
                     <Button onClick={handleLogout}>Logout</Button>
+
+
                 </Toolbar>
             </AppBar>
         </Box>

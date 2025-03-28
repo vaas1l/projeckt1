@@ -1,9 +1,9 @@
 import express from 'express'
-import knex from 'knex'
-import knexfile from '../knexfile.js'
+import mongoose from 'mongoose';
+import Todo from '../model/Todo.js'
 
 
-const db = knex(knexfile)
+
 const router = express.Router()
 
 router.get('/todos', async (req, res) => {
@@ -13,7 +13,7 @@ router.get('/todos', async (req, res) => {
         return res.status(400).json({ success: false, message: 'User ID is required' });
     }
     try {
-        const todos = await db('todos').select('*').where({ user_id });
+        const todos = await Todo.find({ userId: user_id });
         return res.json({ success: true, todos });
     } catch (error) {
         return res.status(500).json({ success: false, error: error.message });
@@ -22,14 +22,20 @@ router.get('/todos', async (req, res) => {
 
 router.delete('/todos/:id', async (req, res) => {
     const { id } = req.params;
-    try {
-        const deletedCount = await db('todos').where({ id }).del();
 
-        if (deletedCount) {
-            return res.json({ success: true, message: 'Todo deleted' });
-        } else {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ success: false, message: 'Invalid ID format' });
+    }
+
+    try {
+        const deletedTodo = await Todo.findByIdAndDelete(id);
+        console.log('Todo deleted:', deletedTodo);
+
+        if (!deletedTodo) {
             return res.status(404).json({ success: false, message: 'Todo not found' });
         }
+
+        return res.json({ success: true, message: 'Todo deleted' });
     } catch (error) {
         return res.status(500).json({ success: false, error: error.message });
     }
@@ -39,7 +45,7 @@ router.post('/todos', async (req, res) => {
     const { text } = req.body; 
 
     const user_id = req.user.id;
-    
+    console.log('User ID:', req.user);
     if (!text) {
         return res.status(400).json({ success: false, message: 'Text is required' });
     }
@@ -49,40 +55,42 @@ router.post('/todos', async (req, res) => {
     }
 
     try {
-        const maxIdResult = await db('todos').max('id as maxId').first();
-        const newId = maxIdResult?.maxId ? maxIdResult.maxId + 1 : 1;
-        const [newTodo] = await db('todos')
-            .insert({
-                id: newId,
-                text,
-                done: 0,
-                priority: 2,
-                created_at: new Date().toISOString(),
-                user_id
-            })
-            .returning('*');
+        const newTodo = new Todo({
+            text,
+            done: false,
+            priority: 2,
+            dueDate: new Date(),
+            userId: user_id,
 
+        });
+        await newTodo.save();
+        console.log('New task added:', newTodo);
         res.status(201).json({ success: true, todo: newTodo });
     } catch (error) {
         console.error('Error adding task:', error);
         res.status(500).json({ success: false, error: error.message });
     }
 });
+
 router.put('/todos/:id', async (req, res) => {
     const { id } = req.params;
     const { done } = req.body;
 
-    console.log(`Received request: id=${id}, new done=${done}`); 
+    console.log('Received update for ID:', id, 'done:', done);
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ success: false, message: 'Invalid MongoDB ID format' });
+    }
 
     if (typeof done !== 'boolean') {
         return res.status(400).json({ success: false, message: 'Invalid done value' });
     }
 
     try {
-        const updatedCount = await db('todos').where({ id }).update({ done });
+        const updatedTodo = await Todo.findByIdAndUpdate(id, { done }, { new: true });
+        console.log('Updated task:', updatedTodo);
 
-        if (updatedCount) {
-            const updatedTodo = await db('todos').where({ id }).first();
+        if (updatedTodo) {
             return res.json({ success: true, message: 'Task status updated', todo: updatedTodo });
         } else {
             return res.status(404).json({ success: false, message: 'Todo not found' });
@@ -96,19 +104,16 @@ router.post('/todos/update-priority/:id', async (req, res) => {
     const { id } = req.params;
     const { priority } = req.body;
 
-    console.log(`Received request to update priority: id=${id}, priority=${priority}`);
-
     if (!id || priority === undefined) {
         return res.status(400).json({ success: false, message: 'Both "id" and "priority" are required' });
     }
 
     try {
-        const updatedCount = await db('todos')
-            .where({ id })
-            .update({ priority });
+        const updatedTodo = await Todo.findByIdAndUpdate(id, { priority }, { new: true });
+        console.log('Updated task:', updatedTodo);  
 
-        if (updatedCount) {
-            return res.json({ success: true, message: 'Task priority updated' });
+        if (updatedTodo) {
+            return res.json({ success: true, message: 'Task priority updated', todo: updatedTodo });
         } else {
             return res.status(404).json({ success: false, message: 'Todo not found' });
         }
@@ -116,6 +121,7 @@ router.post('/todos/update-priority/:id', async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 });
+
 router.post('/todos/update-due-date/:id', async (req, res) => {
     const { id } = req.params;
     const { due_date } = req.body;
@@ -125,12 +131,9 @@ router.post('/todos/update-due-date/:id', async (req, res) => {
     }
 
     try {
-        const updatedCount = await db('todos')
-            .where({ id })
-            .update({ due_date });
+        const updatedTodo = await Todo.findByIdAndUpdate(id, { dueDate: due_date }, { new: true });
 
-        if (updatedCount) {
-            const updatedTodo = await db('todos').where({ id }).first();
+        if (updatedTodo) {
             return res.json({ success: true, message: 'Due date updated', todo: updatedTodo });
         } else {
             return res.status(404).json({ success: false, message: 'Todo not found' });
@@ -139,4 +142,6 @@ router.post('/todos/update-due-date/:id', async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 });
+
+
 export default router;

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5173/api/auth';
+const API_URL = '/api/auth';
 
 const getToken = () => localStorage.getItem('token');
 

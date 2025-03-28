@@ -1,10 +1,7 @@
-
 import LocalStrategy from 'passport-local';
 import bcrypt from 'bcrypt';
-import knex from 'knex';
-import knexfile from './knexfile.js';
-
-const db = knex(knexfile);
+import User from './model/user.js';
+import mongoose from 'mongoose';
 
 const passportConfig = (passport) => {
     passport.use(
@@ -12,7 +9,9 @@ const passportConfig = (passport) => {
             try {
                 username = username.toLowerCase();
 
-                const user = await db('users').where({ email: username }).first();
+                const user = await User.findOne({ email: username });
+
+                console.log('User:', user);
 
                 if (!user) {
                     return done(null, false, { message: 'Invalid email or password.' })
@@ -25,7 +24,7 @@ const passportConfig = (passport) => {
                 }
 
                 return done(null, {
-                    id: user.id,
+                    _id: user._id,
                     email: user.email,
                     username: user.username,
                 });
@@ -38,17 +37,24 @@ const passportConfig = (passport) => {
 
     passport.serializeUser((user, done) => {
         console.log('Passport serializeUser');
-        done(null, user.id);
+        done(null, user._id.toString());
     });
 
     passport.deserializeUser(async (id, done) => {
         console.log('Passport deserializeUser');
-        const user = await db('users').where({ id }).first();
+        try {
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                return done(null, false);
+            }
 
-        if (!user) {
-            return done(null, false);
+            const user = await User.findById(id);
+            if (!user) {
+                return done(null, false);
+            }
+            done(null, user);
+        } catch (err) {
+            done(err, false);
         }
-        done(null, user);
     });
 }
 

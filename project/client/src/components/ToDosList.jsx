@@ -19,9 +19,9 @@ export default function ToDosList({ filter }) {
 
 
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (_id) => {
         try {
-            const response = await fetch(`/api/todos/${id}`, {
+            const response = await fetch(`/api/todos/${_id}`, {
                 method: 'DELETE',
             });
 
@@ -68,14 +68,14 @@ export default function ToDosList({ filter }) {
                         </TableRow>
                     ) : (
                         filteredTodos.map((todo, index) => (
-                            <TableRow key={todo.id || index}>
+                            <TableRow key={todo._id || index}>
                                 <TableCell>{index + 1}</TableCell>
                                 <TableCell align="left">{todo.text}</TableCell>
                                 <TableCell align="center">
                                     {todo.done === 1 || todo.done === true ? 'Ano' : 'Ne'}
                                 </TableCell>
                                 <TableCell align="center">
-                                    <TodoAkce id={todo.id} priority={todo.priority} refreshTodos={refreshTodos} />
+                                    <TodoAkce id={todo._id} priority={todo.priority} refreshTodos={refreshTodos} />
                                 </TableCell>
                                 <TableCell align="center">
                                     {todo.created_at
@@ -84,11 +84,11 @@ export default function ToDosList({ filter }) {
                                     }
                                 </TableCell>
                                 <TableCell align="center">
-                                    <DueDate id={todo.id} dueDate={todo.due_date} refreshTodos={refreshTodos} />
+                                    <DueDate id={todo._id} dueDate={todo.due_date} refreshTodos={refreshTodos} />
                                 </TableCell>
                                 <TableCell align="center">
-                                    <ToggleTaskStatus id={todo.id} done={todo.done === 1 || todo.done === true} refreshTodos={refreshTodos} />
-                                    <Button variant="contained" color="error" onClick={() => handleDelete(todo.id)}>
+                                    <ToggleTaskStatus id={todo._id} done={todo.done === 1 || todo.done === true} refreshTodos={refreshTodos} />
+                                    <Button variant="contained" color="error" onClick={() => handleDelete(todo._id)}>
                                         DELETE
                                     </Button>
                                 </TableCell>

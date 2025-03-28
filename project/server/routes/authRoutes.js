@@ -1,10 +1,8 @@
 import express from 'express';
-import knex from 'knex';
-import knexfile from '../knexfile.js';
 import bcrypt from 'bcrypt';
 import passport from 'passport';
+import User from '../model/user.js';
 
-const db = knex(knexfile);
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
@@ -15,20 +13,23 @@ router.post('/register', async (req, res) => {
     }
 
     try {
-        const existingUser = await db('users').where({ email }).first();
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(409).json({ error: 'User already exists.' });
         }
+        
 
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        const [newUser] = await db('users')
-            .insert({ username, email, password: hashedPassword })
-            .returning(['id', 'email']);
+        const newUser = await User.create({
+            username,
+            email,
+            password: hashedPassword,
+        });
 
         console.log(`User ${email} registered successfully.`);
-        res.status(201).json({ success: true, user_id: newUser.id, message: 'Registration successful. Please log in.' });
+        res.status(201).json({ success: true, user_id: newUser._id, message: 'Registration successful. Please log in.' });
     } catch (error) {
         console.error('Registration error:', error);
         res.status(500).json({ error: 'Internal server error.' });
@@ -58,6 +59,7 @@ router.post('/login', async (req, res) => {
                 return res.status(500).json({ error: 'Failed to login' });
             }
 
+            console.log('User logged in successfully.');
             return res.json(req.user);
         });
     })(req, res);
@@ -99,11 +101,7 @@ router.get('/current-user', async (req, res) => {
     }
 
     try {
-        const user = await db('users')
-            .where({ id: req.user.id })
-            .select('id', 'username', 'email')
-            .first();
-
+        const user = await User.findById(req.user.id).select('id username email');
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
@@ -113,8 +111,22 @@ router.get('/current-user', async (req, res) => {
         console.error('Failed to get user:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
+});
 
-})
-
+router.delete('/delete/:id', async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+        const deletedUser = await User.findByIdAndDelete(id);
+        if (deletedUser) {
+            console.log(`User ${id} deleted successfully.`);
+            return res.json({ success: true, message: 'User deleted successfully' });
+        } else {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+    } catch (error) {
+        return res.status(500).json({ success: false, error: error.message });
+    }
+});
 
 export default router;
